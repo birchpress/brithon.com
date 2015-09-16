@@ -129,7 +129,16 @@ function pl_css_write_file( $folder, $file, $css ) {
 	
 	if( $failed ) {
 		//lets try file_put_contents then!
-		$c = file_put_contents( trailingslashit( $folder ) . $file, $css );
+		//modified by birchpress
+		$options = array(
+			'gs' => array(
+				'Content-Type' => 'text/css',
+				'acl' => 'public-read'
+			)
+		);
+		$ctx = stream_context_create($options);
+		$c = file_put_contents( trailingslashit( $folder ) . $file, $css, 0, $ctx );
+		//end
 		if( ! $c )
 			return pl_less_save_last_error( 'Unable to access filesystem. Check file permissions on uploads dir. Even file_put_contents() failed on: ' . $folder, false );
 	}
