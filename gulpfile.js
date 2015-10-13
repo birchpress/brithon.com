@@ -20,6 +20,19 @@ var dirs = {
   wordpress: path.join(bases.repo, 'app', 'wordpress')
 };
 
+function shellWrapper(cmdTemplate, data) {
+  return shell.exec(_.template(cmdTemplate)(data));
+}
+
+gulp.task('default', function() {
+  fs.readFile('README.md', 'utf8', function(err, data) {
+    if (err) {
+      throw err;
+    }
+    console.log(data);
+  });
+});
+
 gulp.task('clean', function() {
   gPlugins.util.log('Removing ', dirs.app);
   del.sync([dirs.app]);
@@ -27,6 +40,7 @@ gulp.task('clean', function() {
 
 gulp.task('copy:config', function() {
   var srcDir = dirs.src;
+
   return gulp.src([
     'app.yaml', 'cron.yaml', 'php.ini'
   ], {
@@ -50,8 +64,7 @@ gulp.task('copy:wp', [], function() {
 gulp.task('copy:wp-overridden', ['copy:wp'], function() {
   var srcRoot = path.join(dirs.src, 'wp-overridden');
 
-  return gulp.src(['**/*',
-    '!exports{,/**}'],
+  return gulp.src(['**/*'],
     {
       cwd: srcRoot,
       dot: true
@@ -60,4 +73,8 @@ gulp.task('copy:wp-overridden', ['copy:wp'], function() {
 });
 
 
-gulp.task('bundle', ['clean', 'copy:config', 'copy:wp-overridden'], function() {});
+gulp.task('build', ['clean', 'copy:config', 'copy:wp-overridden'], function() {});
+
+gulp.task('deploy', ['build'], function() {
+  shellWrapper('appcfg.py update <%= app %>', dirs);
+});
