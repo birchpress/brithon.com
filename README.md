@@ -1,3 +1,21 @@
+## How to build
+# Usage
+
+```shell
+$ gulp clean
+$ gulp {action} [--env {environments}]
+```
+
+* {action}:  `[build | deploy]`.
+  + `build`: builds release package in `app`.
+  + `deploy`: deploy to GAE.
+* {environments}: `[local | development | production]`. Default: `local`
+  + `local`: local development version.
+  + `development`: developement version deployed on GAE.
+  + `production`: production version on GAE.
+
+**NOTE**: The databases are configured in `src/wp-overriden/environments`.
+
 ## How to run locally
 1. make sure the password of `root` for mysql on localhost is empty
 2. create a database named `brithon`
