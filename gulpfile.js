@@ -8,6 +8,7 @@ var fs = require('fs');
 var shell = require('shelljs');
 var del = require('del');
 
+var lazypipe = require('lazypipe');
 var es = require('event-stream');
 var _ = require('lodash');
 
@@ -60,6 +61,19 @@ gulp.task('clean', function() {
   del.sync([dirs.app]);
 });
 
+function configFilter() {
+  if (taskConfig.env !== 'development') {
+    return lazypipe().pipe(function() {
+      return gPlugins.util.noop();
+    })();
+  }
+
+  return lazypipe().pipe(function() {
+    return gPlugins.if('app.yaml',
+      gPlugins.replace(/^(application: .*)/, '$1-dev'));
+  })();
+}
+
 gulp.task('copy:config', ['sanitycheck', 'clean'], function() {
   var srcDir = dirs.src;
 
@@ -68,6 +82,7 @@ gulp.task('copy:config', ['sanitycheck', 'clean'], function() {
   ], {
     cwd: srcDir
   })
+    .pipe(configFilter())
     .pipe(gulp.dest(dirs.app));
 });
 
