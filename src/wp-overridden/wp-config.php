@@ -43,13 +43,13 @@
             case APPENGINE_PROD_ID:
                 /** Live environment Cloud SQL login info */
                 define('DB_NAME', 'www_brithon_com');
-                define('DB_HOST', ':/cloudsql/www-brithon-com:www-brithon-com');
+                define('DB_HOST', ':/cloudsql/db-brithon-com:www-brithon-com');
                 define('DB_USER', 'root');
                 define('DB_PASSWORD', '');
                 break;
             case APPENGINE_DEV_ID:
-                define('DB_NAME', 'brithon');
-                define('DB_HOST', ':/cloudsql/www-brithon-com-dev:www-brithon-com-dev');
+                define('DB_NAME', 'www_dev_brithon_com');
+                define('DB_HOST', ':/cloudsql/db-dev-brithon-com:www-dev-brithon-com');
                 define('DB_USER', 'root');
                 define('DB_PASSWORD', '');
                 break;
