@@ -14,7 +14,7 @@ $ gulp {action} [--env {environments}]
   + `development`: developement version deployed on GAE.
   + `production`: production version on GAE.
 
-**NOTE**: The databases are configured in `src/wp-overriden/environments`.
+**NOTE**: the release packages of `local` and `production` are the same, while the `application` in `app.yaml` is updated automatically for `development` and all other files remain the same.
 
 ## How to run locally
 1. make sure the password of `root` for mysql on `localhost` is empty.
