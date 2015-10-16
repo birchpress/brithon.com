@@ -33,25 +33,25 @@
     // running locally
     if (APPENGINE_IS_LOCAL) {
         /** Local environment MySQL login info. */
-		define('DB_NAME', 'www_brithon_com');
-		define('DB_HOST', '127.0.0.1');
-		define('DB_USER', 'root');
-		define('DB_PASSWORD', '');
+        define('DB_NAME', 'www_brithon_com');
+        define('DB_HOST', '127.0.0.1');
+        define('DB_USER', 'root');
+        define('DB_PASSWORD', '');
     } else {
         // running on appengine
         switch (APPENGINE_APP_ID) {
             case APPENGINE_PROD_ID:
                 /** Live environment Cloud SQL login info */
-				define('DB_NAME', 'www_brithon_com');
-				define('DB_HOST', ':/cloudsql/www-brithon-com:www-brithon-com');
-				define('DB_USER', 'root');
-				define('DB_PASSWORD', '');
+                define('DB_NAME', 'www_brithon_com');
+                define('DB_HOST', ':/cloudsql/www-brithon-com:www-brithon-com');
+                define('DB_USER', 'root');
+                define('DB_PASSWORD', '');
                 break;
             case APPENGINE_DEV_ID:
-				define('DB_NAME', 'brithon');
-				define('DB_HOST', ':/cloudsql/www-brithon-com-dev:www-brithon-com-dev');
-				define('DB_USER', 'root');
-				define('DB_PASSWORD', '');
+                define('DB_NAME', 'brithon');
+                define('DB_HOST', ':/cloudsql/www-brithon-com-dev:www-brithon-com-dev');
+                define('DB_USER', 'root');
+                define('DB_PASSWORD', '');
                 break;
         }
     }
