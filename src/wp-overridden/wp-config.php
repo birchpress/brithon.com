@@ -14,11 +14,52 @@
      * @package WordPress
      */
 
+    use \google\appengine\api\app_identity\AppIdentityService;
     // Required for batcache use
-    //define('WP_CACHE', true);
+    // define('WP_CACHE', true);
+    // configures batcache
+    // $batcache = [
+    //   'seconds'=>0,
+    //   'max_age'=>30*60, // 30 minutes
+    //   'debug'=>false
+    // ];
 
-    // ** MySQL settings - You can get this info from your web host ** //
-    require('./brithon-config.php');
+    /**
+     * Disable default wp-cron in favor of a real cron job
+     */
+    define('DISABLE_WP_CRON', true);
+
+    // Used to compare against APPENGINE_APP_ID at runtime
+    define('APPENGINE_PROD_ID', 'brithon-1069');
+    define('APPENGINE_DEV_ID', 'brithon-dev');
+    define('APPENGINE_APP_ID', AppIdentityService::getApplicationId());
+    define('APPENGINE_IS_LOCAL', substr(getenv("APPLICATION_ID"), 0, 4) === 'dev~');
+
+    // running locally
+    if (APPENGINE_IS_LOCAL) {
+        /** Local environment MySQL login info. */
+		define('DB_NAME', 'brithon');
+		define('DB_HOST', '127.0.0.1');
+		define('DB_USER', 'root');
+		define('DB_PASSWORD', '');
+    } else {
+        // running on appengine
+        switch (APPENGINE_APP_ID) {
+            case APPENGINE_PROD_ID:
+                /** Live environment Cloud SQL login info */
+				define('DB_NAME', 'brithon');
+				define('DB_HOST', ':/cloudsql/brithon-1069:brithon-com');
+				define('DB_USER', 'root');
+				define('DB_PASSWORD', '');
+                break;
+            case APPENGINE_DEV_ID:
+				define('DB_NAME', 'brithon');
+				define('DB_HOST', ':/cloudsql/brithon-1069:brithon-dev');
+				define('DB_USER', 'root');
+				define('DB_PASSWORD', '');
+                break;
+        }
+    }
 
     // Determine HTTP or HTTPS, then set WP_SITEURL and WP_HOME
     if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443)
@@ -83,17 +124,6 @@
      */
     define('WP_DEBUG', true);
     
-    /**
-     * Disable default wp-cron in favor of a real cron job
-     */
-    define('DISABLE_WP_CRON', true);
-    
-    // configures batcache
-    $batcache = [
-      'seconds'=>0,
-      'max_age'=>30*60, // 30 minutes
-      'debug'=>false
-    ];
     /* That's all, stop editing! Happy blogging. */
 
     /** Absolute path to the WordPress directory. */
