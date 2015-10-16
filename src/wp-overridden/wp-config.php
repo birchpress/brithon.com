@@ -24,21 +24,16 @@
     //   'debug'=>false
     // ];
 
-    /**
-     * Disable default wp-cron in favor of a real cron job
-     */
-    define('DISABLE_WP_CRON', true);
-
     // Used to compare against APPENGINE_APP_ID at runtime
-    define('APPENGINE_PROD_ID', 'brithon-1069');
-    define('APPENGINE_DEV_ID', 'brithon-dev');
+    define('APPENGINE_PROD_ID', 'www-brithon-com');
+    define('APPENGINE_DEV_ID', 'www-dev-brithon-com');
     define('APPENGINE_APP_ID', AppIdentityService::getApplicationId());
-    define('APPENGINE_IS_LOCAL', substr(getenv("APPLICATION_ID"), 0, 4) === 'dev~');
+    define('APPENGINE_IS_LOCAL', substr(getenv('APPLICATION_ID'), 0, 4) === 'dev~');
 
     // running locally
     if (APPENGINE_IS_LOCAL) {
         /** Local environment MySQL login info. */
-		define('DB_NAME', 'brithon');
+		define('DB_NAME', 'www_brithon_com');
 		define('DB_HOST', '127.0.0.1');
 		define('DB_USER', 'root');
 		define('DB_PASSWORD', '');
@@ -47,14 +42,14 @@
         switch (APPENGINE_APP_ID) {
             case APPENGINE_PROD_ID:
                 /** Live environment Cloud SQL login info */
-				define('DB_NAME', 'brithon');
-				define('DB_HOST', ':/cloudsql/brithon-1069:brithon-com');
+				define('DB_NAME', 'www_brithon_com');
+				define('DB_HOST', ':/cloudsql/www-brithon-com:www-brithon-com');
 				define('DB_USER', 'root');
 				define('DB_PASSWORD', '');
                 break;
             case APPENGINE_DEV_ID:
 				define('DB_NAME', 'brithon');
-				define('DB_HOST', ':/cloudsql/brithon-1069:brithon-dev');
+				define('DB_HOST', ':/cloudsql/www-brithon-com-dev:www-brithon-com-dev');
 				define('DB_USER', 'root');
 				define('DB_PASSWORD', '');
                 break;
@@ -123,6 +118,11 @@
      * in their development environments.
      */
     define('WP_DEBUG', true);
+
+    /**
+     * Disable default wp-cron in favor of a real cron job
+     */
+    define('DISABLE_WP_CRON', true);
     
     /* That's all, stop editing! Happy blogging. */
 

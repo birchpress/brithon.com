@@ -70,7 +70,8 @@ function configFilter() {
 
   return lazypipe().pipe(function() {
     return gPlugins.if('app.yaml',
-      gPlugins.replace(/^(application: .*)/, '$1-dev'));
+      gPlugins.replace(/^(application:)\s*(.*)-(brithon-com)/,
+        '$1 $2-dev-$3'));
   })();
 }
 
@@ -91,27 +92,20 @@ gulp.task('copy:wp', ['copy:config'], function() {
 
   return gulp.src('**/*',
     {
-      cwd: srcRoot
+      cwd: srcRoot,
+      dot: true
     })
     .pipe(gulp.dest(dirs.wordpress));
 });
 
 gulp.task('copy:wp-overridden', ['copy:wp'], function() {
-  var mainSrc = ['**/*',
-    '!environments{,/**}'];
-  var configSrc = path.join('environments', taskConfig.env, 'brithon-config.php');
   var srcRoot = path.join(dirs.src, 'wp-overridden');
 
-  return es.merge(gulp.src(mainSrc,
+  return gulp.src('**/*',
     {
       cwd: srcRoot,
-      cwdbase: true,
       dot: true
-    }),
-    gulp.src(configSrc,
-      {
-        cwd: srcRoot
-      }))
+    })
     .pipe(gulp.dest(dirs.wordpress));
 });
 
