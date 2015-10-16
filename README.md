@@ -17,10 +17,18 @@ $ gulp {action} [--env {environments}]
 **NOTE**: the release packages of `local` and `production` are the same, while the `application` in `app.yaml` is updated automatically for `development` and all other files remain the same.
 
 ## How to run locally
-1. make sure the password of `root` for mysql on `localhost` is empty.
-2. create a database named `www_brithon_com`.
-3. download [Google App Engine SDK for PHP](https://cloud.google.com/appengine/downloads?hl=en) and install it.
-4. `cd` the repo dir and run 'npm install'.
-5. run `gulp build` and the `app` dir will be created.
-6. run `dev_appserver.py app`.
-7. visit `http://localhost:8080` to go through the wp installation. 
+1. Add the following line to your `/etc/hosts` (for Windows, it's `%systemroot%\system32\drivers\etc\hosts`)
+
+  > www-local.brithon.com 127.0.0.1
+1. Install MySQL 5.5+ and make sure the password of `root` on `localhost` is empty.
+1. Create a database named `www_brithon_com`.
+
+  ```shell
+$ echo 'CREATE DATABASE www_brithon_com;' | mysql -u root
+  ```
+1. Download and install [Google App Engine SDK for PHP](https://cloud.google.com/appengine/downloads).
+1. Clone this repo and `cd` into the working dir.
+1. Run `npm install`.
+1. Run `gulp build` and the `app` dir will be created.
+1. Start the service with `npm start`.
+1. Visit `http://www-local.brithon.com:8080` to go through the wp installation.

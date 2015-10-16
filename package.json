@@ -4,7 +4,7 @@
   "description": "brithon.com",
   "main": "index.js",
   "scripts": {
-    "start": "dev_appserver.py app",
+    "start": "dev_appserver.py --host www-local.brithon.com --admin_host www-local.brithon.com app",
     "build": "gulp build",
     "deploy": "gulp deploy"
   },
