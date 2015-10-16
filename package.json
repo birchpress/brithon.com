@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "brithon.com",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "start": "dev_appserver.py app",
+    "build": "gulp build",
+    "deploy": "gulp deploy"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/birchpress/brithon.com.git"
