@@ -19,7 +19,7 @@ $ gulp {action} [--env {environments}]
 ## How to run locally
 1. Add the following line to your `/etc/hosts` (for Windows, it's `%systemroot%\system32\drivers\etc\hosts`)
 
-  > www-local.brithon.com 127.0.0.1
+  > 127.0.0.1 www-local.brithon.com
 1. Install MySQL 5.5+ and make sure the password of `root` on `localhost` is empty.
 1. Create a database named `www_brithon_com`.
 
