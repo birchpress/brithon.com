@@ -70,7 +70,7 @@ function configFilter() {
 
   return lazypipe().pipe(function() {
     return gPlugins.if('app.yaml',
-      gPlugins.replace(/^(application:)\s*(.*)-(brithon-com)/,
+      gPlugins.replace(/^(application:)\s*(brithon)-(.*)/,
         '$1 $2-dev-$3'));
   })();
 }

@@ -25,15 +25,15 @@
     // ];
 
     // Used to compare against APPENGINE_APP_ID at runtime
-    define('APPENGINE_PROD_ID', 'www-brithon-com');
-    define('APPENGINE_DEV_ID', 'www-dev-brithon-com');
+    define('APPENGINE_PROD_ID', 'brithon-www');
+    define('APPENGINE_DEV_ID', 'brithon-dev-www');
     define('APPENGINE_APP_ID', AppIdentityService::getApplicationId());
     define('APPENGINE_IS_LOCAL', substr(getenv('APPLICATION_ID'), 0, 4) === 'dev~');
 
     // running locally
     if (APPENGINE_IS_LOCAL) {
         /** Local environment MySQL login info. */
-        define('DB_NAME', 'www_brithon_com');
+        define('DB_NAME', 'brithon_www');
         define('DB_HOST', '127.0.0.1');
         define('DB_USER', 'root');
         define('DB_PASSWORD', '');
@@ -42,14 +42,14 @@
         switch (APPENGINE_APP_ID) {
             case APPENGINE_PROD_ID:
                 /** Live environment Cloud SQL login info */
-                define('DB_NAME', 'www_brithon_com');
-                define('DB_HOST', ':/cloudsql/db-brithon-com:www-brithon-com');
+                define('DB_NAME', 'brithon_www');
+                define('DB_HOST', ':/cloudsql/brithon-db:brithon-www');
                 define('DB_USER', 'root');
                 define('DB_PASSWORD', '');
                 break;
             case APPENGINE_DEV_ID:
-                define('DB_NAME', 'www_dev_brithon_com');
-                define('DB_HOST', ':/cloudsql/db-dev-brithon-com:www-dev-brithon-com');
+                define('DB_NAME', 'brithon_dev_www');
+                define('DB_HOST', ':/cloudsql/brithon-dev-db:brithon-dev-www');
                 define('DB_USER', 'root');
                 define('DB_PASSWORD', '');
                 break;

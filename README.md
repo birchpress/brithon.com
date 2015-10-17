@@ -21,10 +21,10 @@ $ gulp {action} [--env {environments}]
 
   > 127.0.0.1 www-local.brithon.com
 1. Install MySQL 5.5+ and make sure the password of `root` on `localhost` is empty.
-1. Create a database named `www_brithon_com`.
+1. Create a database named `brithon_www`.
 
   ```shell
-$ echo 'CREATE DATABASE www_brithon_com;' | mysql -u root
+$ echo 'CREATE DATABASE brithon_www;' | mysql -u root
   ```
 1. Download and install [Google App Engine SDK for PHP](https://cloud.google.com/appengine/downloads).
 1. Clone this repo and `cd` into the working dir.
