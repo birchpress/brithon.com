@@ -1,5 +1,5 @@
 application: brithon
-module: www
+module: default
 version: v0-0-1
 runtime: php55
 api_version: 1
