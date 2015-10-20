@@ -14,7 +14,6 @@
      * @package WordPress
      */
 
-    use \google\appengine\api\app_identity\AppIdentityService;
     // Required for batcache use
     // define('WP_CACHE', true);
     // configures batcache
@@ -24,36 +23,48 @@
     //   'debug'=>false
     // ];
 
-    // Used to compare against APPENGINE_APP_ID at runtime
-    define('APPENGINE_PROD_ID', 'brithon-www');
-    define('APPENGINE_DEV_ID', 'brithon-dev-www');
-    define('APPENGINE_APP_ID', AppIdentityService::getApplicationId());
-    define('APPENGINE_IS_LOCAL', substr(getenv('APPLICATION_ID'), 0, 4) === 'dev~');
+    $appengine_app_ids = array(
+        'prod' => 'brithon-prod',
+        'dev' => 'brithon-dev',
+        'local' => 'brithon-local'
+    );
 
-    // running locally
-    if (APPENGINE_IS_LOCAL) {
-        /** Local environment MySQL login info. */
+    // running on appengine
+    if (isset($_SERVER['APPLICATION_ID'])) {
+        $is_local_appengine = substr($_SERVER['APPLICATION_ID'], 0, 4) === 'dev~';
+
+        if ($is_local_appengine) {
+            // local GAE
+            define('DB_NAME', 'brithon_www');
+            define('DB_HOST', '127.0.0.1');
+            define('DB_USER', 'root');
+            define('DB_PASSWORD', '');
+        } else {
+            // online GAE
+            switch ($_SERVER['APPLICATION_ID']) {
+                case $appengine_app_ids['prod']:
+                    /** Live environment Cloud SQL login info */
+                    define('DB_NAME', 'brithon_www');
+                    define('DB_HOST', ':/cloudsql/brithon-prod:brithon-www');
+                    define('DB_USER', 'root');
+                    define('DB_PASSWORD', '');
+                    break;
+                case $appengine_app_ids['dev']:
+                    define('DB_NAME', 'brithon_www');
+                    define('DB_HOST', ':/cloudsql/brithon-dev:brithon-www');
+                    define('DB_USER', 'root');
+                    define('DB_PASSWORD', '');
+                    break;
+                default:
+                    die('Unrecognized environment.');
+            }
+        }
+    } else {
+        // running without GAE
         define('DB_NAME', 'brithon_www');
         define('DB_HOST', '127.0.0.1');
         define('DB_USER', 'root');
         define('DB_PASSWORD', '');
-    } else {
-        // running on appengine
-        switch (APPENGINE_APP_ID) {
-            case APPENGINE_PROD_ID:
-                /** Live environment Cloud SQL login info */
-                define('DB_NAME', 'brithon_www');
-                define('DB_HOST', ':/cloudsql/brithon-db:brithon-www');
-                define('DB_USER', 'root');
-                define('DB_PASSWORD', '');
-                break;
-            case APPENGINE_DEV_ID:
-                define('DB_NAME', 'brithon_dev_www');
-                define('DB_HOST', ':/cloudsql/brithon-dev-db:brithon-dev-www');
-                define('DB_USER', 'root');
-                define('DB_PASSWORD', '');
-                break;
-        }
     }
 
     // Determine HTTP or HTTPS, then set WP_SITEURL and WP_HOME

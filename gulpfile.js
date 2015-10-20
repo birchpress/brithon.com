@@ -13,8 +13,8 @@ var es = require('event-stream');
 var _ = require('lodash');
 
 var environments = [
-  'development',
-  'production',
+  'dev',
+  'prod',
   'local'
 ];
 
@@ -62,16 +62,10 @@ gulp.task('clean', function() {
 });
 
 function configFilter() {
-  if (taskConfig.env !== 'development') {
-    return lazypipe().pipe(function() {
-      return gPlugins.util.noop();
-    })();
-  }
-
   return lazypipe().pipe(function() {
     return gPlugins.if('app.yaml',
-      gPlugins.replace(/^(application:)\s*(brithon)-(.*)/,
-        '$1 $2-dev-$3'));
+      gPlugins.replace(/^(application):\s*(brithon)/,
+        '$1: $2-' + taskConfig.env));
   })();
 }
 

@@ -9,10 +9,10 @@ $ gulp {action} [--env {environments}]
 * {action}:  `[build | deploy]`.
   + `build`: builds release package in `app`.
   + `deploy`: deploy to GAE.
-* {environments}: `[local | development | production]`. Default: `local`
+* {environments}: `[local | dev | prod]`. Default: `local`
   + `local`: local development version.
-  + `development`: developement version deployed on GAE.
-  + `production`: production version on GAE.
+  + `dev`: developement version deployed on GAE.
+  + `prod`: production version on GAE.
 
 **NOTE**: the release packages of `local` and `production` are the same, while the `application` in `app.yaml` is updated automatically for `development` and all other files remain the same.
 
