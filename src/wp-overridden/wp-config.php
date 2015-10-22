@@ -29,35 +29,35 @@
         'local' => 'brithon-local'
     );
 
+    use \google\appengine\api\app_identity\AppIdentityService;
     // running on appengine
     if (isset($_SERVER['APPLICATION_ID'])) {
-        $is_local_appengine = substr($_SERVER['APPLICATION_ID'], 0, 4) === 'dev~';
+        $application_id = AppIdentityService::getApplicationId();
 
-        if ($is_local_appengine) {
-            // local GAE
-            define('DB_NAME', 'brithon_www');
-            define('DB_HOST', '127.0.0.1');
-            define('DB_USER', 'root');
-            define('DB_PASSWORD', '');
-        } else {
-            // online GAE
-            switch ($_SERVER['APPLICATION_ID']) {
-                case $appengine_app_ids['prod']:
-                    /** Live environment Cloud SQL login info */
-                    define('DB_NAME', 'brithon_www');
-                    define('DB_HOST', ':/cloudsql/brithon-prod:brithon-db');
-                    define('DB_USER', 'root');
-                    define('DB_PASSWORD', '');
-                    break;
-                case $appengine_app_ids['dev']:
-                    define('DB_NAME', 'brithon_www');
-                    define('DB_HOST', ':/cloudsql/brithon-dev:brithon-db');
-                    define('DB_USER', 'root');
-                    define('DB_PASSWORD', '');
-                    break;
-                default:
-                    die('Unrecognized environment.');
-            }
+        // online GAE
+        switch ($application_id) {
+            case $appengine_app_ids['prod']:
+                /** Live environment Cloud SQL login info */
+                define('DB_NAME', 'brithon_www');
+                define('DB_HOST', ':/cloudsql/brithon-prod:brithon-db');
+                define('DB_USER', 'root');
+                define('DB_PASSWORD', '');
+                break;
+            case $appengine_app_ids['dev']:
+                define('DB_NAME', 'brithon_www');
+                define('DB_HOST', ':/cloudsql/brithon-dev:brithon-db');
+                define('DB_USER', 'root');
+                define('DB_PASSWORD', '');
+                break;
+            case $appengine_app_ids['local']:
+                // local GAE
+                define('DB_NAME', 'brithon_www');
+                define('DB_HOST', '127.0.0.1');
+                define('DB_USER', 'root');
+                define('DB_PASSWORD', '');
+                break;
+            default:
+                die('Unrecognized application_id: ' . $application_id);
         }
     } else {
         // running without GAE
