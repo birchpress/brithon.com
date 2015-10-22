@@ -1,6 +1,6 @@
-## How to build
 # Usage
 
+## How to build
 ```shell
 $ gulp clean
 $ gulp {action} [--env {environments}]
