@@ -45,13 +45,13 @@
                 case $appengine_app_ids['prod']:
                     /** Live environment Cloud SQL login info */
                     define('DB_NAME', 'brithon_www');
-                    define('DB_HOST', ':/cloudsql/brithon-prod:brithon-www');
+                    define('DB_HOST', ':/cloudsql/brithon-prod:brithon-db');
                     define('DB_USER', 'root');
                     define('DB_PASSWORD', '');
                     break;
                 case $appengine_app_ids['dev']:
                     define('DB_NAME', 'brithon_www');
-                    define('DB_HOST', ':/cloudsql/brithon-dev:brithon-www');
+                    define('DB_HOST', ':/cloudsql/brithon-dev:brithon-db');
                     define('DB_USER', 'root');
                     define('DB_PASSWORD', '');
                     break;
