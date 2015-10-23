@@ -4,6 +4,9 @@
   "description": "brithon.com",
   "main": "index.js",
   "scripts": {
+    "start": "dev_appserver.py --host www-local.brithon.com --admin_host www-local.brithon.com app",
+    "build": "gulp build",
+    "deploy": "gulp deploy"
   },
   "repository": {
     "type": "git",
@@ -16,11 +19,15 @@
   },
   "homepage": "https://github.com/birchpress/brithon.com",
   "devDependencies": {
-    "del": "^2.0.0",
+    "del": "^2.0.2",
+    "event-stream": "^3.3.1",
     "gulp": "^3.9.0",
+    "gulp-if": "^2.0.0",
     "gulp-load-plugins": "^1.0.0-rc.1",
+    "gulp-replace": "^0.5.4",
     "gulp-util": "^3.0.6",
     "gulp-zip": "^3.0.2",
+    "lazypipe": "^1.0.1",
     "lodash": "^3.10.1",
     "shelljs": "^0.5.3"
   }

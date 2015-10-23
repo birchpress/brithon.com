@@ -1,5 +1,6 @@
-application: brithon-1069
-version: v001
+application: brithon
+module: default
+version: v0-0-1
 runtime: php55
 api_version: 1
 
@@ -54,3 +55,4 @@ skip_files:
 - ^(.*/)?\.bat$
 - ^(.*/)?\.sh$
 - ^(.*/)?\.md$
+- wordpress/wp-content/uploads/.*

@@ -15,20 +15,53 @@
      */
 
     // Required for batcache use
-    //define('WP_CACHE', true);
+    // define('WP_CACHE', true);
+    // configures batcache
+    // $batcache = [
+    //   'seconds'=>0,
+    //   'max_age'=>30*60, // 30 minutes
+    //   'debug'=>false
+    // ];
 
-    // ** MySQL settings - You can get this info from your web host ** //
-    /** The name of the database for WordPress */
-    define('DB_NAME', 'brithon');
+    $appengine_app_ids = array(
+        'prod' => 'brithon-prod',
+        'dev' => 'brithon-dev',
+        'local' => 'brithon-local'
+    );
 
-    if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'],'Google App Engine') !== false) {
-        /** Live environment Cloud SQL login and SITE_URL info */
-        /** Note that from App Engine, the password is not required, so leave it blank here */
-        define('DB_HOST', ':/cloudsql/brithon-1069:brithon-com');
-        define('DB_USER', 'root');
-        define('DB_PASSWORD', '');
+    use \google\appengine\api\app_identity\AppIdentityService;
+    // running on appengine
+    if (isset($_SERVER['APPLICATION_ID'])) {
+        $application_id = AppIdentityService::getApplicationId();
+
+        // online GAE
+        switch ($application_id) {
+            case $appengine_app_ids['prod']:
+                /** Live environment Cloud SQL login info */
+                define('DB_NAME', 'brithon_www');
+                define('DB_HOST', ':/cloudsql/brithon-prod:brithon-db');
+                define('DB_USER', 'root');
+                define('DB_PASSWORD', '');
+                break;
+            case $appengine_app_ids['dev']:
+                define('DB_NAME', 'brithon_www');
+                define('DB_HOST', ':/cloudsql/brithon-dev:brithon-db');
+                define('DB_USER', 'root');
+                define('DB_PASSWORD', '');
+                break;
+            case $appengine_app_ids['local']:
+                // local GAE
+                define('DB_NAME', 'brithon_www');
+                define('DB_HOST', '127.0.0.1');
+                define('DB_USER', 'root');
+                define('DB_PASSWORD', '');
+                break;
+            default:
+                die('Unrecognized application_id: ' . $application_id);
+        }
     } else {
-        /** Local environment MySQL login info */
+        // running without GAE
+        define('DB_NAME', 'brithon_www');
         define('DB_HOST', '127.0.0.1');
         define('DB_USER', 'root');
         define('DB_PASSWORD', '');
@@ -96,18 +129,12 @@
      * in their development environments.
      */
     define('WP_DEBUG', true);
-    
+
     /**
      * Disable default wp-cron in favor of a real cron job
      */
     define('DISABLE_WP_CRON', true);
     
-    // configures batcache
-    $batcache = [
-      'seconds'=>0,
-      'max_age'=>30*60, // 30 minutes
-      'debug'=>false
-    ];
     /* That's all, stop editing! Happy blogging. */
 
     /** Absolute path to the WordPress directory. */
