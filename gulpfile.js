@@ -106,5 +106,10 @@ gulp.task('copy:wp-overridden', ['copy:wp'], function() {
 gulp.task('build', ['copy:wp-overridden'], function() {});
 
 gulp.task('deploy', ['build'], function() {
-  shellWrapper('appcfg.py update <%= app %>', dirs);
+  if (taskConfig.env === 'local') {
+    gPlugins.util.log(gPlugins.util.colors.red('[Error]',
+      'no need to deploy for local environment.'));
+  } else {
+    shellWrapper('appcfg.py update <%= app %>', dirs);
+  }
 });
