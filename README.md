@@ -3,7 +3,7 @@
 ## How to build
 ```shell
 $ gulp clean
-$ gulp {action} [--env {environments}]
+$ gulp {action} [--environment {environments}]
 ```
 
 * {action}:  `[build | deploy]`.

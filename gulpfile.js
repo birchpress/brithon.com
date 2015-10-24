@@ -31,7 +31,44 @@ var dirs = {
 var taskConfig = {};
 
 function shellWrapper(cmdTemplate, data) {
-  return shell.exec(_.template(cmdTemplate)(data));
+  var _data = data || {};
+
+  return shell.exec(_.template(cmdTemplate)(_data));
+}
+
+function normalizeVersion(version) {
+  // normalize the version for GAE.
+  // '/' is allowed in branch and tag names, so escape it for path buidling.
+  // we also escape bad chars for file name.
+  return version.replace(/[\/\\:\.\?\*\|'"# ]/g, '-');
+}
+
+function getVersion() {
+  var res = shellWrapper('git name-rev --tags --name-only --no-undefined HEAD');
+
+  if (res.code) {
+    gPlugins.util.log(gPlugins.util.colors.yellow('[Warn]',
+      'no tag attached to current HEAD, try to use commit# instead.'));
+
+    res = shellWrapper('git rev-parse --short HEAD');
+    if (res.code) {
+      gPlugins.util.log(gPlugins.util.colors.red('[Error]',
+        'get commit# failed,', res.output));
+      process.exit(1);
+    }
+    taskConfig.version = [gPlugins.util.date("UTC:yyyymmdd'T'HHMMss'Z'"), res.output.trim()].join('-');
+  } else {
+    taskConfig.version = res.output.trim();
+  }
+
+  taskConfig.version = normalizeVersion(taskConfig.version);
+}
+
+function configFilter() {
+  return lazypipe().pipe(function() {
+    return gPlugins.if('app.yaml',
+      gPlugins.template(taskConfig));
+  })();
 }
 
 gulp.task('default', function() {
@@ -44,32 +81,31 @@ gulp.task('default', function() {
 });
 
 gulp.task('sanitycheck', function() {
+  // supress shell command output
+  shell.config.silent = true;
+
   _.assign(taskConfig, {
-    env: (gPlugins.util.env.env || 'local').toLowerCase()
+    environment: (gPlugins.util.env.environment || 'local').toLowerCase()
   });
 
-  if (!(_.includes(environments, taskConfig.env))) {
+  if (!(_.includes(environments, taskConfig.environment))) {
     gPlugins.util.log(gPlugins.util.colors.red('[Error]',
-      'unknown env:',
-      taskConfig.env));
+      'unknown environment:',
+      taskConfig.environment));
     process.exit(1);
   }
 });
 
 gulp.task('clean', function() {
-  gPlugins.util.log('Removing ', dirs.app);
+  gPlugins.util.log('Removing', gPlugins.util.colors.blue(dirs.app));
   del.sync([dirs.app]);
 });
 
-function configFilter() {
-  return lazypipe().pipe(function() {
-    return gPlugins.if('app.yaml',
-      gPlugins.replace(/^(application):\s*(brithon)/,
-        '$1: $2-' + taskConfig.env));
-  })();
-}
+gulp.task('get:version', ['sanitycheck', 'clean'], function() {
+  getVersion();
+});
 
-gulp.task('copy:config', ['sanitycheck', 'clean'], function() {
+gulp.task('copy:config', ['get:version'], function() {
   var srcDir = dirs.src;
 
   return gulp.src([
@@ -106,7 +142,7 @@ gulp.task('copy:wp-overridden', ['copy:wp'], function() {
 gulp.task('build', ['copy:wp-overridden'], function() {});
 
 gulp.task('deploy', ['build'], function() {
-  if (taskConfig.env === 'local') {
+  if (taskConfig.environment === 'local') {
     gPlugins.util.log(gPlugins.util.colors.red('[Error]',
       'no need to deploy for local environment.'));
   } else {
