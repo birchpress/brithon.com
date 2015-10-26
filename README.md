@@ -32,6 +32,9 @@ $ gulp {action} [--environment {environments}]
     $ docker start mysql-5.6
 
     # (optional for mac only), forward port vm `3306` to host `3306`. 
+
+    # remove the container
+    $ docker rm -v mysql-5.6
    ```
 1. Create a database named `brithon_www`.
 
