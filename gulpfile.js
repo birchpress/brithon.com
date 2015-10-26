@@ -40,7 +40,7 @@ function normalizeVersion(version) {
   // normalize the version for GAE.
   // '/' is allowed in branch and tag names, so escape it for path buidling.
   // we also escape bad chars for file name.
-  return version.replace(/[\/\\:\.\?\*\|'"# ]/g, '-');
+  return version.replace(/[\/\\:\.\?\*\|'"# ]/g, '-').toLowerCase();
 }
 
 function getVersion() {
@@ -56,7 +56,7 @@ function getVersion() {
         'get commit# failed,', res.output));
       process.exit(1);
     }
-    taskConfig.version = [gPlugins.util.date("UTC:yyyymmdd'T'HHMMss'Z'"), res.output.trim()].join('-');
+    taskConfig.version = ['v', gPlugins.util.date("UTC:yyyymmdd'T'HHMMss'Z'"), res.output.trim()].join('-');
   } else {
     taskConfig.version = res.output.trim();
   }
