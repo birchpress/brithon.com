@@ -8,15 +8,19 @@ var fs = require('fs');
 var shell = require('shelljs');
 var del = require('del');
 
-var lazypipe = require('lazypipe');
-var es = require('event-stream');
 var _ = require('lodash');
 
-var environments = [
-  'dev',
-  'prod',
-  'local'
-];
+var environments = {
+  dev: {
+    url_suffix: '-dev'
+  },
+  prod: {
+    url_suffix: ''
+  },
+  local: {
+    url_suffix: ''
+  }
+};
 
 var bases = {
   repo: __dirname
@@ -64,13 +68,6 @@ function getVersion() {
   taskConfig.version = normalizeVersion(taskConfig.version);
 }
 
-function configFilter() {
-  return lazypipe().pipe(function() {
-    return gPlugins.if('app.yaml',
-      gPlugins.template(taskConfig));
-  })();
-}
-
 gulp.task('default', function() {
   fs.readFile('README.md', 'utf8', function(err, data) {
     if (err) {
@@ -80,44 +77,67 @@ gulp.task('default', function() {
   });
 });
 
-gulp.task('sanitycheck', function() {
+gulp.task('sanitycheck', function(callback) {
   // supress shell command output
   shell.config.silent = true;
 
-  _.assign(taskConfig, {
-    environment: (gPlugins.util.env.environment || 'local').toLowerCase()
-  });
+  taskConfig.environment = (gPlugins.util.env.environment || 'local').toLowerCase();
 
-  if (!(_.includes(environments, taskConfig.environment))) {
+  if (!(_.has(environments, taskConfig.environment))) {
     gPlugins.util.log(gPlugins.util.colors.red('[Error]',
       'unknown environment:',
       taskConfig.environment));
     process.exit(1);
   }
+
+  taskConfig.url_suffix = environments[taskConfig.environment].url_suffix;
+
+  callback();
 });
 
-gulp.task('clean', function() {
+gulp.task('clean', function(callback) {
   gPlugins.util.log('Removing', gPlugins.util.colors.blue(dirs.app));
   del.sync([dirs.app]);
+
+  callback();
 });
 
-gulp.task('get:version', ['sanitycheck', 'clean'], function() {
+gulp.task('get:version', ['sanitycheck', 'clean'], function(callback) {
   getVersion();
+
+  callback();
 });
 
-gulp.task('copy:config', ['get:version'], function() {
-  var srcDir = dirs.src;
-
-  return gulp.src([
-    'app.yaml', 'cron.yaml', 'php.ini'
-  ], {
-    cwd: srcDir
-  })
-    .pipe(configFilter())
+gulp.task('copy:config:dispatch.yaml', ['get:version'], function() {
+  return gulp.src('dispatch.yaml',
+    {
+      cwd: dirs.src
+    })
+    .pipe(gPlugins.if(taskConfig.environment === 'local',
+      gPlugins.ignore.exclude('**/dispatch.yaml')))
+    .pipe(gPlugins.template(taskConfig))
     .pipe(gulp.dest(dirs.app));
 });
 
-gulp.task('copy:wp', ['copy:config'], function() {
+gulp.task('copy:config:app.yaml', ['copy:config:dispatch.yaml'], function() {
+  return gulp.src('app.yaml',
+    {
+      cwd: dirs.src
+    })
+    .pipe(gPlugins.template(taskConfig))
+    .pipe(gulp.dest(dirs.app));
+});
+
+gulp.task('copy:config:other', ['copy:config:app.yaml'], function() {
+  return gulp.src([
+    'cron.yaml', 'php.ini'
+  ], {
+    cwd: dirs.src
+  })
+    .pipe(gulp.dest(dirs.app));
+});
+
+gulp.task('copy:wp', ['copy:config:other'], function() {
   var srcRoot = path.join(dirs.src, 'wp');
 
   return gulp.src('**/*',
@@ -139,13 +159,17 @@ gulp.task('copy:wp-overridden', ['copy:wp'], function() {
     .pipe(gulp.dest(dirs.wordpress));
 });
 
-gulp.task('build', ['copy:wp-overridden'], function() {});
+gulp.task('build', ['copy:wp-overridden'], function(callback) {
+  callback();
+});
 
-gulp.task('deploy', ['build'], function() {
+gulp.task('deploy', ['build'], function(callback) {
   if (taskConfig.environment === 'local') {
     gPlugins.util.log(gPlugins.util.colors.red('[Error]',
       'no need to deploy for local environment.'));
   } else {
     shellWrapper('appcfg.py update <%= app %>', dirs);
   }
+
+  callback();
 });

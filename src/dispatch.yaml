@@ -1,0 +1,6 @@
+dispatch:
+  - url: "www<%= url_suffix %>.brithon.com/"
+    module: default
+
+  - url: "appointments<%= url_suffix %>.brithon.com/"
+    module: appointments
