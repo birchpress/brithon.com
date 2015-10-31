@@ -100,6 +100,7 @@
     define('SECURE_AUTH_SALT', 'hj]>PE&nEK8>zGFfXyf=L%+_d:)WHo.R=9oI7;XEc&3m=6E2~pQzYVCb*.p}52Ka');
     define('LOGGED_IN_SALT',   'cY2/I9iP^CDOyM7{m>,bC!B%|j!Wf =Y=S=+`oS`{8I3q-cnpDAR&p`9iIbBY<ws');
     define('NONCE_SALT',       '9^ Gn Z=(-<km|.A<8+!]ZE~s5q[_$9iaIsQE[jU6(Z?Pd+H0HV[Td!;[q/(:PTk');
+    define('WP_CACHE_KEY_SALT','nA?:u:xergUg-XJl0H05i^I*%H-5-_V+^4LZ?^/{Yiip&DxaU&l?Kq8|tM&u9P_;');
 
     /**#@-*/
 
