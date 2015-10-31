@@ -3,7 +3,7 @@
 ## How to build
 ```shell
 $ gulp clean
-$ gulp {action} [--env {environments}]
+$ gulp {action} [--environment {environments}]
 ```
 
 * {action}:  `[build | deploy]`.
@@ -21,6 +21,21 @@ $ gulp {action} [--env {environments}]
 
   > 127.0.0.1 www-local.brithon.com
 1. Install MySQL 5.5+ and make sure the password of `root` on `localhost` is empty.
+   It's easy to install MySQL in local box, while installation in virtual machine is recommended, which is also very easy. And you only need to forward port `3306` of guest to `3306` of host. Actually, it would be much simpler with docker like this:
+
+   ```shell
+    # install msyql docker image, and create a local container `mysql-5.6`, with empty root password.
+    # local data volume /var/lib/mysql is created for data persistence.
+    $ docker run --name mysql-5.6 -p 3306:3306 -v /var/lib/mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d mysql:5.6
+
+    # use this after
+    $ docker start mysql-5.6
+
+    # (optional for mac only), forward port vm `3306` to host `3306`. 
+
+    # remove the container
+    $ docker rm -v mysql-5.6
+   ```
 1. Create a database named `brithon_www`.
 
   ```shell

@@ -1,6 +1,6 @@
-application: brithon
+application: brithon-<%= environment %>
 module: default
-version: v0-0-1
+version: <%= version %>
 runtime: php55
 api_version: 1
 
