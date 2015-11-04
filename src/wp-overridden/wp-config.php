@@ -42,12 +42,18 @@
                 define('DB_HOST', ':/cloudsql/brithon-prod:brithon-db');
                 define('DB_USER', 'root');
                 define('DB_PASSWORD', '');
+
+                define('WP_DEBUG', false);
+                define('DISABLE_WP_CRON', true);
                 break;
             case $appengine_app_ids['dev']:
                 define('DB_NAME', 'brithon_www');
                 define('DB_HOST', ':/cloudsql/brithon-dev:brithon-db');
                 define('DB_USER', 'root');
                 define('DB_PASSWORD', '');
+
+                define('WP_DEBUG', true);
+                define('DISABLE_WP_CRON', true);
                 break;
             case $appengine_app_ids['local']:
                 // local GAE
@@ -55,6 +61,9 @@
                 define('DB_HOST', '127.0.0.1');
                 define('DB_USER', 'root');
                 define('DB_PASSWORD', '');
+
+                define('WP_DEBUG', true);
+                define('DISABLE_WP_CRON', true);
                 break;
             default:
                 die('Unrecognized application_id: ' . $application_id);
@@ -65,6 +74,8 @@
         define('DB_HOST', '127.0.0.1');
         define('DB_USER', 'root');
         define('DB_PASSWORD', '');
+
+        define('WP_DEBUG', true);
     }
 
     // Determine HTTP or HTTPS, then set WP_SITEURL and WP_HOME
@@ -129,12 +140,12 @@
      * It is strongly recommended that plugin and theme developers use WP_DEBUG
      * in their development environments.
      */
-    define('WP_DEBUG', true);
+     // <brithon> please set it for different envs.
 
     /**
      * Disable default wp-cron in favor of a real cron job
      */
-    define('DISABLE_WP_CRON', true);
+     // <brithon> please set it for different envs.
     
     /* That's all, stop editing! Happy blogging. */
 
