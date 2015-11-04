@@ -44,4 +44,4 @@ $ echo 'CREATE DATABASE brithon_www;' | mysql -u root
 1. Run `npm install`.
 1. Run `gulp build` and the `app` dir will be created.
 1. Start the service with `npm start`.
-1. Visit `http://www-local.brithon.com:8080` to go through the wp installation.
+1. Visit http://www-local.brithon.com:8080 to go through the wp installation.
