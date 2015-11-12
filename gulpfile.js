@@ -20,7 +20,7 @@ const dirs = {
   wordpress: path.join(bases.repo, 'app', 'wordpress')
 };
 
-let environments = {
+const environments = {
   dev: {
     url_suffix: '-dev'
   },
