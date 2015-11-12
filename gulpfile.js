@@ -1,16 +1,26 @@
 'use strict';
 
-var gulp = require('gulp');
-var gPlugins = require('gulp-load-plugins')();
+const gulp = require('gulp');
+const gPlugins = require('gulp-load-plugins')();
 
-var path = require('path');
-var fs = require('fs');
-var shell = require('shelljs');
-var del = require('del');
+const path = require('path');
+const fs = require('fs');
+const shell = require('shelljs');
+const del = require('del');
 
-var _ = require('lodash');
+const _ = require('lodash');
 
-var environments = {
+const bases = {
+  repo: __dirname
+};
+
+const dirs = {
+  src: path.join(bases.repo, 'src'),
+  app: path.join(bases.repo, 'app'),
+  wordpress: path.join(bases.repo, 'app', 'wordpress')
+};
+
+let environments = {
   dev: {
     url_suffix: '-dev'
   },
@@ -22,20 +32,10 @@ var environments = {
   }
 };
 
-var bases = {
-  repo: __dirname
-};
-
-var dirs = {
-  src: path.join(bases.repo, 'src'),
-  app: path.join(bases.repo, 'app'),
-  wordpress: path.join(bases.repo, 'app', 'wordpress')
-};
-
-var taskConfig = {};
+let taskConfig = {};
 
 function shellWrapper(cmdTemplate, data) {
-  var _data = data || {};
+  const _data = data || {};
 
   return shell.exec(_.template(cmdTemplate)(_data));
 }
@@ -48,7 +48,7 @@ function normalizeVersion(version) {
 }
 
 function getVersion() {
-  var res = shellWrapper('git name-rev --tags --name-only --no-undefined HEAD');
+  let res = shellWrapper('git name-rev --tags --name-only --no-undefined HEAD');
 
   if (res.code) {
     gPlugins.util.log(gPlugins.util.colors.yellow('[Warn]',
@@ -109,7 +109,7 @@ gulp.task('get:version', ['sanitycheck', 'clean'], function(callback) {
 });
 
 gulp.task('copy:config:cron', ['get:version'], function() {
-  var cronSrc = 'cron.yaml';
+  let cronSrc = 'cron.yaml';
 
   if (taskConfig.environment !== 'local') {
     cronSrc = 'cron-online.yaml';
@@ -135,7 +135,7 @@ gulp.task('copy:config:other', ['copy:config:cron'], function() {
 });
 
 gulp.task('copy:wp', ['copy:config:other'], function() {
-  var srcRoot = path.join(dirs.src, 'wp');
+  const srcRoot = path.join(dirs.src, 'wp');
 
   return gulp.src('**/*',
     {
@@ -146,7 +146,7 @@ gulp.task('copy:wp', ['copy:config:other'], function() {
 });
 
 gulp.task('copy:wp-overridden', ['copy:wp'], function() {
-  var srcRoot = path.join(dirs.src, 'wp-overridden');
+  const srcRoot = path.join(dirs.src, 'wp-overridden');
 
   return gulp.src('**/*',
     {
