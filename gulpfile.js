@@ -32,12 +32,10 @@ const environments = {
   }
 };
 
-let taskConfig = {};
+const taskConfig = {};
 
-function shellWrapper(cmdTemplate, data) {
-  const _data = data || {};
-
-  return shell.exec(_.template(cmdTemplate)(_data));
+function shellWrapper(cmdString) {
+  return shell.exec(cmdString);
 }
 
 function normalizeVersion(version) {
@@ -108,25 +106,13 @@ gulp.task('get:version', ['sanitycheck', 'clean'], function(callback) {
   callback();
 });
 
-gulp.task('copy:config:cron', ['get:version'], function() {
-  let cronSrc = 'cron.yaml';
-
-  if (taskConfig.environment !== 'local') {
-    cronSrc = 'cron-online.yaml';
-  }
-
-  return gulp.src(cronSrc,
-    {
-      cwd: dirs.src
-    })
-    .pipe(gPlugins.rename({
-      basename: 'cron'
-    }))
-    .pipe(gulp.dest(dirs.app));
-});
-
-gulp.task('copy:config:other', ['copy:config:cron'], function() {
-  return gulp.src(['app.yaml','dispatch.yaml', 'queue.yaml', 'php.ini'],
+gulp.task('copy:config', ['get:version'], function() {
+  return gulp.src([
+    'app.yaml',
+    'dispatch.yaml',
+    'queue.yaml',
+    'cron.yaml',
+    'php.ini'],
     {
       cwd: dirs.src
     })
@@ -134,7 +120,7 @@ gulp.task('copy:config:other', ['copy:config:cron'], function() {
     .pipe(gulp.dest(dirs.app));
 });
 
-gulp.task('copy:wp', ['copy:config:other'], function() {
+gulp.task('copy:wp', ['copy:config'], function() {
   const srcRoot = path.join(dirs.src, 'wp');
 
   return gulp.src('**/*',
@@ -165,7 +151,7 @@ gulp.task('deploy', ['build'], function(callback) {
     gPlugins.util.log(gPlugins.util.colors.red('[Error]',
       'no need to deploy for local environment.'));
   } else {
-    shellWrapper('appcfg.py update <%= app %>', dirs);
+    shellWrapper(`appcfg.py update ${dirs.app}`);
   }
 
   callback();
