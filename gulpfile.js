@@ -126,7 +126,7 @@ gulp.task('copy:config:cron', ['get:version'], function() {
 });
 
 gulp.task('copy:config:other', ['copy:config:cron'], function() {
-  return gulp.src(['dispatch.yaml', 'app.yaml', 'php.ini'],
+  return gulp.src(['app.yaml','dispatch.yaml', 'queue.yaml', 'php.ini'],
     {
       cwd: dirs.src
     })
